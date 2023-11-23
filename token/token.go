@@ -26,3 +26,16 @@ const (
 	DEF          = "DEF"
 	RETURN       = "RETURN"
 )
+
+var keywords map[string]TokenType = map[string]TokenType{
+	"fun":    FUNCTION,
+	"def":    DEF,
+	"return": RETURN,
+}
+
+func LookupIdentifier(id string) TokenType {
+	if token, ok := keywords[id]; ok {
+		return token
+	}
+	return ID
+}
