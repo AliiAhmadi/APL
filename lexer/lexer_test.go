@@ -155,3 +155,73 @@ func TestIfAndElseKeywords(t *testing.T) {
 		}
 	}
 }
+
+func TestNewOperators(t *testing.T) {
+	input := `
+	def x = 12, y = 23, z = 34;
+
+	def result = x + y + z;
+
+	result = result * 2;
+	result = result * 23 / 34 - 1;
+	`
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.DEF, "def"},
+		{token.ID, "x"},
+		{token.ASSIGN, "="},
+		{token.INT, "12"},
+		{token.COMMA, ","},
+		{token.ID, "y"},
+		{token.ASSIGN, "="},
+		{token.INT, "23"},
+		{token.COMMA, ","},
+		{token.ID, "z"},
+		{token.ASSIGN, "="},
+		{token.INT, "34"},
+		{token.SEMICOLON, ";"},
+		{token.DEF, "def"},
+		{token.ID, "result"},
+		{token.ASSIGN, "="},
+		{token.ID, "x"},
+		{token.PLUS, "+"},
+		{token.ID, "y"},
+		{token.PLUS, "+"},
+		{token.ID, "z"},
+		{token.SEMICOLON, ";"},
+		{token.ID, "result"},
+		{token.ASSIGN, "="},
+		{token.ID, "result"},
+		{token.ASTERISK, "*"},
+		{token.INT, "2"},
+		{token.SEMICOLON, ";"},
+		{token.ID, "result"},
+		{token.ASSIGN, "="},
+		{token.ID, "result"},
+		{token.ASTERISK, "*"},
+		{token.INT, "23"},
+		{token.SLASH, "/"},
+		{token.INT, "34"},
+		{token.MINUS, "-"},
+		{token.INT, "1"},
+		{token.SEMICOLON, ";"},
+		{token.EOF, ""},
+	}
+
+	lexer := New(input)
+
+	for i, test := range tests {
+		tok := lexer.NextToken()
+
+		if tok.Type != test.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, test.expectedType, tok.Type)
+		}
+
+		if tok.Literal != test.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", i, test.expectedLiteral, tok.Literal)
+		}
+	}
+}

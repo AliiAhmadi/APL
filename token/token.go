@@ -31,6 +31,10 @@ const (
 	SMALLER      = "<"
 	GREATEREQUAL = ">="
 	SMALLEREQUAL = "<="
+	MINUS        = "-"
+	BANG         = "!"
+	SLASH        = "/"
+	ASTERISK     = "*"
 )
 
 var keywords map[string]TokenType = map[string]TokenType{
