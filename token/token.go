@@ -35,6 +35,9 @@ const (
 	BANG         = "!"
 	SLASH        = "/"
 	ASTERISK     = "*"
+	TRUE         = "TRUE"
+	FALSE        = "FALSE"
+	ELIF         = "ELIF"
 )
 
 var keywords map[string]TokenType = map[string]TokenType{
@@ -43,6 +46,9 @@ var keywords map[string]TokenType = map[string]TokenType{
 	"return": RETURN,
 	"if":     IF,
 	"else":   ELSE,
+	"elif":   ELIF,
+	"true":   TRUE,
+	"false":  FALSE,
 }
 
 func LookupIdentifier(id string) TokenType {
