@@ -226,3 +226,55 @@ func TestNewOperators(t *testing.T) {
 		}
 	}
 }
+
+func TestDoubleSignOperatorsLexer(t *testing.T) {
+	input := `
+	def x, y;
+	if (x == y) {
+		return true
+	} else {
+		return false
+	}
+	`
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.DEF, "def"},
+		{token.ID, "x"},
+		{token.COMMA, ","},
+		{token.ID, "y"},
+		{token.SEMICOLON, ";"},
+		{token.IF, "if"},
+		{token.LPARENTHESES, "("},
+		{token.ID, "x"},
+		{token.EQUALITY, "=="},
+		{token.ID, "y"},
+		{token.RPARENTHESES, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.TRUE, "true"},
+		{token.RBRACE, "}"},
+		{token.ELSE, "else"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.FALSE, "false"},
+		{token.RBRACE, "}"},
+		{token.EOF, ""},
+	}
+
+	lexer := New(input)
+
+	for i, test := range tests {
+		tok := lexer.NextToken()
+
+		if tok.Type != test.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, test.expectedType, tok.Type)
+		}
+
+		if tok.Literal != test.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", i, test.expectedLiteral, tok.Literal)
+		}
+	}
+}
