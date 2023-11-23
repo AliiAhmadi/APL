@@ -24,4 +24,5 @@ const (
 	RBRACE       = "}"
 	FUNCTION     = "FUNCTION"
 	DEF          = "DEF"
+	RETURN       = "RETURN"
 )
