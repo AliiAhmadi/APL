@@ -23,6 +23,7 @@ func TestNextToken(t *testing.T) {
 		{token.RBRACE, "}"},
 		{token.SEMICOLON, ";"},
 		{token.COMMA, ","},
+		{token.EOF, ""},
 	}
 
 	lexer := New(input)
