@@ -25,12 +25,20 @@ const (
 	FUNCTION     = "FUNCTION"
 	DEF          = "DEF"
 	RETURN       = "RETURN"
+	IF           = "IF"
+	ELSE         = "ELSE"
+	GREATER      = ">"
+	SMALLER      = "<"
+	GREATEREQUAL = ">="
+	SMALLEREQUAL = "<="
 )
 
 var keywords map[string]TokenType = map[string]TokenType{
 	"fun":    FUNCTION,
 	"def":    DEF,
 	"return": RETURN,
+	"if":     IF,
+	"else":   ELSE,
 }
 
 func LookupIdentifier(id string) TokenType {

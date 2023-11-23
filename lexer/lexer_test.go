@@ -92,6 +92,53 @@ func TestNextTokenWiderWithMoreDetails(t *testing.T) {
 		{token.ID, "second_variable"},
 		{token.RPARENTHESES, ")"},
 		{token.SEMICOLON, ";"},
+		{token.EOF, ""},
+	}
+
+	lexer := New(input)
+
+	for i, test := range tests {
+		tok := lexer.NextToken()
+
+		if tok.Type != test.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, test.expectedType, tok.Type)
+		}
+
+		if tok.Literal != test.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", i, test.expectedLiteral, tok.Literal)
+		}
+	}
+}
+
+func TestIfAndElseKeywords(t *testing.T) {
+	input := `
+	if(first_var > second_var) {
+		return first_var
+	}else {
+		return second_var
+	}
+	`
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.IF, "if"},
+		{token.LPARENTHESES, "("},
+		{token.ID, "first_var"},
+		{token.GREATER, ">"},
+		{token.ID, "second_var"},
+		{token.RPARENTHESES, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.ID, "first_var"},
+		{token.RBRACE, "}"},
+		{token.ELSE, "else"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.ID, "second_var"},
+		{token.RBRACE, "}"},
+		{token.EOF, ""},
 	}
 
 	lexer := New(input)
