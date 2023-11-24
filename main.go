@@ -1,16 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"os/user"
+	"Ahmadi/repl"
+	"os"
 )
 
 func main() {
-	user, err := user.Current()
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(user.Username)
+	repl.Start(os.Stdin, os.Stdout)
 }
