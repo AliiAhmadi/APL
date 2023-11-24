@@ -13,10 +13,8 @@ func TestNextToken(t *testing.T) {
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
-		{token.PLUS, "+"},
-		{token.ASSIGN, "="},
-		{token.PLUS, "+"},
-		{token.ASSIGN, "="},
+		{token.SHORT_PLUS, "+="},
+		{token.SHORT_PLUS, "+="},
 		{token.LPARENTHESES, "("},
 		{token.RPARENTHESES, ")"},
 		{token.LBRACE, "{"},
@@ -275,6 +273,61 @@ func TestDoubleSignOperatorsLexer(t *testing.T) {
 
 		if tok.Literal != test.expectedLiteral {
 			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", i, test.expectedLiteral, tok.Literal)
+		}
+	}
+}
+
+func TestMultiCharOperators(t *testing.T) {
+	input := `
+	def x;
+	x = 10;
+	x += 20;
+	x -= 20;
+	x *= 1000;
+	x /= 2;
+	`
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.DEF, "def"},
+		{token.ID, "x"},
+		{token.SEMICOLON, ";"},
+		{token.ID, "x"},
+		{token.ASSIGN, "="},
+		{token.INT, "10"},
+		{token.SEMICOLON, ";"},
+		{token.ID, "x"},
+		{token.SHORT_PLUS, "+="},
+		{token.INT, "20"},
+		{token.SEMICOLON, ";"},
+		{token.ID, "x"},
+		{token.SHORT_MINUS, "-="},
+		{token.INT, "20"},
+		{token.SEMICOLON, ";"},
+		{token.ID, "x"},
+		{token.SHORT_MULTIPLY, "*="},
+		{token.INT, "1000"},
+		{token.SEMICOLON, ";"},
+		{token.ID, "x"},
+		{token.SHORT_DIVISION, "/="},
+		{token.INT, "2"},
+		{token.SEMICOLON, ";"},
+		{token.EOF, ""},
+	}
+
+	lexer := New(input)
+
+	for index, test := range tests {
+		tok := lexer.NextToken()
+
+		if tok.Type != test.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", index, test.expectedType, tok.Type)
+		}
+
+		if tok.Literal != test.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", index, test.expectedLiteral, tok.Literal)
 		}
 	}
 }
