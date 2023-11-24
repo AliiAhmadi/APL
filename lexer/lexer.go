@@ -35,11 +35,44 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.ch {
 	case '*':
-		tok = newToken(token.ASTERISK, l.ch)
+		if l.peekChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			literal := string(ch) + string(l.ch)
+			tok = token.Token{
+				Type:    token.SHORT_MULTIPLY,
+				Literal: literal,
+			}
+		} else {
+			tok = newToken(token.ASTERISK, l.ch)
+		}
+
 	case '/':
-		tok = newToken(token.SLASH, l.ch)
+		if l.peekChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			literal := string(ch) + string(l.ch)
+			tok = token.Token{
+				Type:    token.SHORT_DIVISION,
+				Literal: literal,
+			}
+		} else {
+			tok = newToken(token.SLASH, l.ch)
+		}
+
 	case '-':
-		tok = newToken(token.MINUS, l.ch)
+		if l.peekChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			literal := string(ch) + string(l.ch)
+			tok = token.Token{
+				Type:    token.SHORT_MINUS,
+				Literal: literal,
+			}
+		} else {
+			tok = newToken(token.MINUS, l.ch)
+		}
+
 	case '!':
 		if l.peekChar() == '=' {
 			ch := l.ch
@@ -52,6 +85,7 @@ func (l *Lexer) NextToken() token.Token {
 		} else {
 			tok = newToken(token.BANG, l.ch)
 		}
+
 	case '>':
 		tok = newToken(token.GREATER, l.ch)
 	case '<':
@@ -66,6 +100,7 @@ func (l *Lexer) NextToken() token.Token {
 		} else {
 			tok = newToken(token.SMALLER, l.ch)
 		}
+
 	case '=':
 		if l.peekChar() == '=' {
 			ch := l.ch
@@ -78,6 +113,7 @@ func (l *Lexer) NextToken() token.Token {
 		} else {
 			tok = newToken(token.ASSIGN, l.ch)
 		}
+
 	case ';':
 		tok = newToken(token.SEMICOLON, l.ch)
 	case '(':
@@ -91,10 +127,22 @@ func (l *Lexer) NextToken() token.Token {
 	case ',':
 		tok = newToken(token.COMMA, l.ch)
 	case '+':
-		tok = newToken(token.PLUS, l.ch)
+		if l.peekChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			literal := string(ch) + string(l.ch)
+			tok = token.Token{
+				Type:    token.SHORT_PLUS,
+				Literal: literal,
+			}
+		} else {
+			tok = newToken(token.PLUS, l.ch)
+		}
+
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+
 	default:
 		if isLetter(l.ch) {
 			tok.Literal = l.readIndentifier()

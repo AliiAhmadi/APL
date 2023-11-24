@@ -41,6 +41,10 @@ const (
 	EQUALITY            = "=="
 	NOT_EQUALITY_SIMPLE = "!="
 	NOT_EQUALITY_SIGNS  = "<>"
+	SHORT_MULTIPLY      = "*="
+	SHORT_PLUS          = "+="
+	SHORT_DIVISION      = "/="
+	SHORT_MINUS         = "-="
 )
 
 var keywords map[string]TokenType = map[string]TokenType{
