@@ -17,8 +17,8 @@ func New(lexer *lexer.Lexer) *Parser {
 		lexer: lexer,
 	}
 
-	p.nextToken()
-	p.nextToken()
+	p.nextToken() // set peekToken
+	p.nextToken() // set curToken
 	return p
 }
 

@@ -29,7 +29,7 @@ func (p *Program) TokenLiteral() string {
 }
 
 type DefStatement struct {
-	Token token.Token
+	Token token.Token // def
 	Name  *Identifier
 	Value Expression
 }
