@@ -22,7 +22,7 @@ func TestDefStatements(t *testing.T) {
 	}
 
 	if len(program.Statements) != 3 {
-		t.Fatalf("program.Statements contain %v, expected %d", len(program.Statements), 3)
+		t.Fatalf("program.Statements contain %d, expected %d", len(program.Statements), 3)
 	}
 
 	tests := []struct {
