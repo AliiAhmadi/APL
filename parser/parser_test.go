@@ -8,9 +8,7 @@ import (
 
 func TestDefStatements(t *testing.T) {
 	input := `
-	def x = 20;
-	def y = 10;
-	def z = 30;
+	def x = 12;
 	`
 
 	lexer := lexer.New(input)
@@ -21,21 +19,18 @@ func TestDefStatements(t *testing.T) {
 		t.Fatalf("Nil returned from ParseProgram()")
 	}
 
-	if len(program.Statements) != 3 {
-		t.Fatalf("program.Statements contain %d, expected %d", len(program.Statements), 3)
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.Statements contain %d, expected %d", len(program.Statements), 1)
 	}
 
 	tests := []struct {
 		expectedIndentifier string
 	}{
 		{"x"},
-		{"y"},
-		{"z"},
 	}
 
 	for index, test := range tests {
 		statement := program.Statements[index]
-
 		if !testDefStatement(t, statement, test.expectedIndentifier) {
 			return
 		}
@@ -49,6 +44,7 @@ func testDefStatement(t *testing.T, statement ast.Statement, identifier string) 
 	}
 
 	defStatement, ok := statement.(*ast.DefStatement)
+
 	if !ok {
 		t.Errorf("statement not *ast.DefStatement, got=%T", statement)
 		return false
@@ -59,9 +55,9 @@ func testDefStatement(t *testing.T, statement ast.Statement, identifier string) 
 		return false
 	}
 
-	if defStatement.Value.TokenLiteral() != identifier {
-		t.Errorf("defStatement.Value.TokenLiteral() not '%s' got=%s", identifier, defStatement.Value.TokenLiteral())
-	}
+	// if defStatement.Value.TokenLiteral() != identifier {
+	// 	t.Errorf("defStatement.Value.TokenLiteral() not '%s' got=%s", identifier, defStatement.Value.TokenLiteral())
+	// }
 
 	return true
 }

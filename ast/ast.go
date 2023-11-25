@@ -1,6 +1,8 @@
 package ast
 
-import "Ahmadi/token"
+import (
+	"Ahmadi/token"
+)
 
 type Node interface {
 	TokenLiteral() string
