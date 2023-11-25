@@ -1,5 +1,7 @@
 package ast
 
+import "Ahmadi/token"
+
 type Node interface {
 	TokenLiteral() string
 }
@@ -25,3 +27,20 @@ func (p *Program) TokenLiteral() string {
 		return ""
 	}
 }
+
+type DefStatement struct {
+	Token token.Token
+	Name  *Identifier
+	Value Expression
+}
+
+func (ds *DefStatement) statementNode()       {}
+func (ds *DefStatement) TokenLiteral() string { return ds.Token.Literal }
+
+type Identifier struct {
+	Token token.Token
+	Value string
+}
+
+func (i *Identifier) expressionNode()      {}
+func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
