@@ -17,25 +17,61 @@ func TestDefStatements(t *testing.T) {
 	checkParseErrors(t, parser)
 
 	if program == nil {
-		t.Fatalf("Nil returned from ParseProgram()")
+		nilProgram(t)
 	}
 
 	if len(program.Statements) != 1 {
-		t.Fatalf("program.Statements contain %d, expected %d", len(program.Statements), 1)
+		statementCountError(t, 1, len(program.Statements))
 	}
 
 	tests := []struct {
-		expectedIndentifier string
+		expectedIdentifier string
 	}{
 		{"x"},
 	}
 
 	for index, test := range tests {
 		statement := program.Statements[index]
-		if !testDefStatement(t, statement, test.expectedIndentifier) {
+		if !testDefStatement(t, statement, test.expectedIdentifier) {
 			return
 		}
 	}
+}
+
+func TestIncorrectDefStatements(t *testing.T) {
+	input := `
+	def first_age = 25;
+	def second_age = 23;
+	`
+
+	lexer := lexer.New(input)
+	parser := New(lexer)
+
+	program := parser.ParseProgram()
+	checkParseErrors(t, parser)
+
+	if program == nil {
+		nilProgram(t)
+	}
+
+	if len(program.Statements) != 2 {
+		statementCountError(t, 2, len(program.Statements))
+	}
+
+	tests := []struct {
+		expectedIdentifier string
+	}{
+		{"first_age"},
+		{"second_age"},
+	}
+
+	for index, test := range tests {
+		staement := program.Statements[index]
+		if !testDefStatement(t, staement, test.expectedIdentifier) {
+			return
+		}
+	}
+
 }
 
 func testDefStatement(t *testing.T, statement ast.Statement, identifier string) bool {
@@ -79,4 +115,12 @@ func checkParseErrors(t *testing.T, p *Parser) {
 		t.Errorf("parser error: %q", message)
 	}
 	t.FailNow()
+}
+
+func nilProgram(t *testing.T) {
+	t.Fatalf("Nil returned from ParseProgram()")
+}
+
+func statementCountError(t *testing.T, expected int, found int) {
+	t.Fatalf("program.Statements contain %d, expected %d", found, expected)
 }
