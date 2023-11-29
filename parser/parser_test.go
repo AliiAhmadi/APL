@@ -55,9 +55,14 @@ func testDefStatement(t *testing.T, statement ast.Statement, identifier string) 
 		return false
 	}
 
-	// if defStatement.Value.TokenLiteral() != identifier {
-	// 	t.Errorf("defStatement.Value.TokenLiteral() not '%s' got=%s", identifier, defStatement.Value.TokenLiteral())
-	// }
+	if defStatement.Name.TokenLiteral() != identifier {
+		t.Errorf("letStmt.Name.TokenLiteral() not '%s'. got=%s", identifier, defStatement.Name.TokenLiteral())
+		return false
+	}
+
+	if defStatement.Token.Literal != "def" {
+		t.Errorf("defStatement.Token.Literal not 'def' got='%s'", defStatement.Token.Literal)
+	}
 
 	return true
 }
