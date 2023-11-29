@@ -124,3 +124,34 @@ func nilProgram(t *testing.T) {
 func statementCountError(t *testing.T, expected int, found int) {
 	t.Fatalf("program.Statements contain %d, expected %d", found, expected)
 }
+
+func TestReturnStatements(t *testing.T) {
+	input := `
+	return 5;
+	return 10;
+	return -12;
+	`
+
+	lexer := lexer.New(input)
+	parser := New(lexer)
+
+	program := parser.ParseProgram()
+	checkParseErrors(t, parser)
+
+	if len(program.Statements) != 3 {
+		statementCountError(t, 3, len(program.Statements))
+	}
+
+	for _, statement := range program.Statements {
+		returnStmt, ok := statement.(*ast.ReturnStatement)
+
+		if !ok {
+			t.Errorf("statement not *ast.ReturnStatement, got='%T'", statement)
+			continue
+		}
+
+		if returnStmt.TokenLiteral() != "return" {
+			t.Errorf("returnStmt.TokenLiteral not 'return', got='%q'", returnStmt.TokenLiteral())
+		}
+	}
+}

@@ -48,7 +48,7 @@ func (i *Identifier) expressionNode()      {}
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 
 type ReturnStatement struct {
-	Token       token.Token
+	Token       token.Token // return
 	ReturnValue Expression
 }
 
