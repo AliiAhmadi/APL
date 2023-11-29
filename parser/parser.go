@@ -49,9 +49,26 @@ func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
 	case token.DEF:
 		return p.parseDefStatement()
+	case token.RETURN:
+		return p.parseReturnStatement()
 	default:
 		return nil
 	}
+}
+
+func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
+	statement := &ast.ReturnStatement{
+		Token: p.curToken,
+	}
+
+	p.nextToken()
+
+	// TODO
+
+	for !p.curTokenIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+	return statement
 }
 
 func (p *Parser) parseDefStatement() *ast.DefStatement {
