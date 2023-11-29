@@ -4,17 +4,20 @@ import (
 	"Ahmadi/ast"
 	"Ahmadi/lexer"
 	"Ahmadi/token"
+	"fmt"
 )
 
 type Parser struct {
 	lexer     *lexer.Lexer
 	curToken  token.Token
 	peekToken token.Token
+	errors    []string
 }
 
 func New(lexer *lexer.Lexer) *Parser {
 	p := &Parser{
-		lexer: lexer,
+		lexer:  lexer,
+		errors: []string{},
 	}
 
 	p.nextToken() // set peekToken
@@ -92,4 +95,13 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 		return true
 	}
 	return false
+}
+
+func (p *Parser) Errors() []string {
+	return p.errors
+}
+
+func (p *Parser) peekError(t token.TokenType) {
+	message := fmt.Sprintf("expected next token to be '%s', got='%s'", t, p.peekToken.Type)
+	p.errors = append(p.errors, message)
 }

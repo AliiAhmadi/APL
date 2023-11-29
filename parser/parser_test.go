@@ -14,6 +14,7 @@ func TestDefStatements(t *testing.T) {
 	lexer := lexer.New(input)
 	parser := New(lexer)
 	program := parser.ParseProgram()
+	checkParseErrors(t, parser)
 
 	if program == nil {
 		t.Fatalf("Nil returned from ParseProgram()")
@@ -65,4 +66,17 @@ func testDefStatement(t *testing.T, statement ast.Statement, identifier string) 
 	}
 
 	return true
+}
+
+func checkParseErrors(t *testing.T, p *Parser) {
+	errors := p.Errors()
+	if len(errors) == 0 {
+		return
+	}
+
+	t.Errorf("parser has %d errors", len(errors))
+	for _, message := range errors {
+		t.Errorf("parser error: %q", message)
+	}
+	t.FailNow()
 }
