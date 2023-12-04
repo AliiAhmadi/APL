@@ -19,6 +19,18 @@ const (
 	CALL        // func()
 )
 
+var precedences = map[token.TokenType]int{
+	token.EQUALITY:            EQUALS,
+	token.NOT_EQUALITY_SIMPLE: EQUALS,
+	token.NOT_EQUALITY_SIGNS:  EQUALS,
+	token.GREATER:             LESSGREATER,
+	token.SMALLER:             LESSGREATER,
+	token.PLUS:                SUM,
+	token.MINUS:               SUM,
+	token.SLASH:               PRODUCT,
+	token.ASTERISK:            PRODUCT,
+}
+
 type Parser struct {
 	lexer          *lexer.Lexer
 	curToken       token.Token
@@ -44,6 +56,17 @@ func New(lexer *lexer.Lexer) *Parser {
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
+
+	p.infixParseFns = make(map[token.TokenType]infixParseFn)
+	p.registerInfix(token.PLUS, p.parseInfixExpression)
+	p.registerInfix(token.MINUS, p.parseInfixExpression)
+	p.registerInfix(token.SLASH, p.parseInfixExpression)
+	p.registerInfix(token.ASTERISK, p.parseInfixExpression)
+	p.registerInfix(token.EQUALITY, p.parseInfixExpression)
+	p.registerInfix(token.NOT_EQUALITY_SIMPLE, p.parseInfixExpression)
+	p.registerInfix(token.NOT_EQUALITY_SIGNS, p.parseInfixExpression)
+	p.registerInfix(token.GREATER, p.parseInfixExpression)
+	p.registerInfix(token.SMALLER, p.parseInfixExpression)
 
 	p.nextToken() // set peekToken
 	p.nextToken() // set curToken
@@ -220,5 +243,32 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 
 	p.nextToken()
 	expression.Right = p.parseExpression(PREFIX)
+	return expression
+}
+
+func (p *Parser) peekPrecedence() int {
+	if k, ok := precedences[p.curToken.Type]; ok {
+		return k
+	}
+	return LOWEST
+}
+
+func (p *Parser) curPrecedence() int {
+	if k, ok := precedences[p.curToken.Type]; ok {
+		return k
+	}
+	return LOWEST
+}
+
+func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	expression := &ast.InfixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+		Left:     left,
+	}
+
+	precedence := p.curPrecedence()
+	p.nextToken()
+	expression.Right = p.parseExpression(precedence)
 	return expression
 }
