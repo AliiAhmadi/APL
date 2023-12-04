@@ -25,6 +25,8 @@ var precedences = map[token.TokenType]int{
 	token.NOT_EQUALITY_SIGNS:  EQUALS,
 	token.GREATER:             LESSGREATER,
 	token.SMALLER:             LESSGREATER,
+	token.GREATEREQUAL:        LESSGREATER,
+	token.SMALLEREQUAL:        LESSGREATER,
 	token.PLUS:                SUM,
 	token.MINUS:               SUM,
 	token.SLASH:               PRODUCT,
@@ -204,7 +206,7 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 	leftExp := prefix()
 
 	for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
-		infix := p.infixParseFns[p.curToken.Type]
+		infix := p.infixParseFns[p.peekToken.Type]
 		if infix == nil {
 			return leftExp
 		}
@@ -257,7 +259,7 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 }
 
 func (p *Parser) peekPrecedence() int {
-	if k, ok := precedences[p.curToken.Type]; ok {
+	if k, ok := precedences[p.peekToken.Type]; ok {
 		return k
 	}
 	return LOWEST
