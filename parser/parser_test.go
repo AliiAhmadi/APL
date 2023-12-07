@@ -221,9 +221,9 @@ func TestIntegerLiteralExpression(t *testing.T) {
 
 func TestParsingPrefixExpressions(t *testing.T) {
 	prefixTests := []struct {
-		input        string
-		operator     string
-		integerValue interface{}
+		input    string
+		operator string
+		value    interface{}
 	}{
 		{"!100;", "!", 100},
 		{"-20;", "-", 20},
@@ -255,8 +255,14 @@ func TestParsingPrefixExpressions(t *testing.T) {
 			t.Fatalf("exp.Operator is not '%s'. got='%s'", test.operator, exp.Operator)
 		}
 
-		if !testIntegerLiteral(t, exp.Right, test.integerValue) {
-			return
+		if value, ok := test.value.(bool); ok {
+			if !testBooleanLiteral(t, exp.Right, value) {
+				return
+			}
+		} else {
+			if !testIntegerLiteral(t, exp.Right, test.value) {
+				return
+			}
 		}
 	}
 }
@@ -269,9 +275,16 @@ func testIntegerLiteral(t *testing.T, integerLiteral ast.Expression, value inter
 		return false
 	}
 
-	if integ.Value != value {
-		t.Errorf("integ.Value not %d. got='%d'", value, integ.Value)
-		return false
+	if val, ok := value.(int); ok {
+		if integ.Value != int64(val) {
+			t.Errorf("integ.Value not %d. got='%d'", value, integ.Value)
+			return false
+		}
+	} else {
+		if integ.Value != value.(int64) {
+			t.Errorf("integ.Value not %d. got='%d'", value, integ.Value)
+			return false
+		}
 	}
 
 	if integ.TokenLiteral() != fmt.Sprintf("%d", value) {
@@ -326,8 +339,24 @@ func TestParsingInfixExpressions(t *testing.T) {
 			t.Fatalf("exp.Operator is not '%s'. got=%s", test.operator, exp.Operator)
 		}
 
-		if !testIntegerLiteral(t, exp.Right, test.rightValue) {
-			return
+		if value, ok := test.rightValue.(bool); ok {
+			if !testBooleanLiteral(t, exp.Right, value) {
+				return
+			}
+		} else {
+			if !testIntegerLiteral(t, exp.Right, test.rightValue.(int)) {
+				return
+			}
+		}
+
+		if value, ok := test.leftValue.(bool); ok {
+			if !testBooleanLiteral(t, exp.Left, value) {
+				return
+			}
+		} else {
+			if !testIntegerLiteral(t, exp.Left, test.leftValue.(int)) {
+				return
+			}
 		}
 
 		if !testInfixExpression(t, statement.Expression, test.leftValue, test.operator, test.rightValue) {
@@ -466,7 +495,7 @@ func testInfixExpression(t *testing.T, exp ast.Expression, left interface{}, ope
 		return false
 	}
 
-	if !testLiteralExpression(t, exp, left) {
+	if !testLiteralExpression(t, operatorExpression.Left, left) {
 		return false
 	}
 
@@ -475,7 +504,7 @@ func testInfixExpression(t *testing.T, exp ast.Expression, left interface{}, ope
 		return false
 	}
 
-	if !testLiteralExpression(t, exp, right) {
+	if !testLiteralExpression(t, operatorExpression.Right, right) {
 		return false
 	}
 

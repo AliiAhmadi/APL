@@ -172,4 +172,4 @@ type Boolean struct {
 
 func (bl *Boolean) expressionNode()      {}
 func (bl *Boolean) TokenLiteral() string { return bl.Token.Literal }
-func (bl *Boolean) String() string       { return bl.Token.Literal }
+func (bl *Boolean) String() string       { return bl.TokenLiteral() }
