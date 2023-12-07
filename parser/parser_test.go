@@ -594,3 +594,12 @@ func TestIfExpression(t *testing.T) {
 		t.Errorf("exp.Alternative.Statements was not nil. got=%+v", exp.Alternative)
 	}
 }
+
+func TestIfElseExpression(t *testing.T) {
+	input := `if (x < y) { x } else { y }`
+
+	lexer := lexer.New(input)
+	parser := New(lexer)
+	// program := parser.ParseProgram()
+	checkParseErrors(t, parser)
+}
