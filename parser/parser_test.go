@@ -454,6 +454,18 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 			"!(true == true)",
 			"(!(true == true))",
 		},
+		{
+			"a + add(b * c) + d",
+			"((a + add((b * c))) + d)",
+		},
+		{
+			"add(a, b, 1, 2 * 3, 4 + 5, add(6, 7 * 8))",
+			"add(a, b, 1, (2 * 3), (4 + 5), add(6, (7 * 8)))",
+		},
+		{
+			"add(a + b + c * d / f + g)",
+			"add((((a + b) + ((c * d) / f)) + g))",
+		},
 	}
 
 	for _, test := range tests {
@@ -750,4 +762,37 @@ func TestCallExpressionParsing(t *testing.T) {
 
 	testInfixExpression(t, exp.Arguments[0], 10, "*", 2)
 	testLiteralExpression(t, exp.Arguments[1], 12)
+}
+
+func TestMultipleDefStatements(t *testing.T) {
+	tests := []struct {
+		input              string
+		expectedIdentifier string
+		expectedValue      interface{}
+	}{
+		{"def x = 10;", "x", 10},
+		{"def y = true;", "y", true},
+		{"def foobar = y;", "foobar", "y"},
+	}
+
+	for _, test := range tests {
+		lexer := lexer.New(test.input)
+		parser := New(lexer)
+		program := parser.ParseProgram()
+		checkParseErrors(t, parser)
+
+		if len(program.Statements) != 1 {
+			t.Fatalf("program.Statements does not contain %d statements. got=%d", 1, len(program.Statements))
+		}
+
+		statement := program.Statements[0]
+		if !testDefStatement(t, statement, test.expectedIdentifier) {
+			return
+		}
+
+		value := statement.(*ast.DefStatement).Value
+		if !testLiteralExpression(t, value, test.expectedValue) {
+			return
+		}
+	}
 }
