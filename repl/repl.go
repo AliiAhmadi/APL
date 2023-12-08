@@ -2,7 +2,7 @@ package repl
 
 import (
 	"Ahmadi/lexer"
-	"Ahmadi/token"
+	"Ahmadi/parser"
 	"bufio"
 	"fmt"
 	"io"
@@ -23,10 +23,20 @@ func Start(in io.Reader, out io.Writer) {
 
 		line := scanner.Text()
 		lex := lexer.New(line)
-
-		for tok := lex.NextToken(); tok.Type != token.EOF; tok = lex.NextToken() {
-			fmt.Fprintf(out, "%+v\n", tok)
+		parser := parser.New(lex)
+		program := parser.ParseProgram()
+		if len(parser.Errors()) != 0 {
+			printParserErrors(out, parser.Errors())
+			continue
 		}
-		fmt.Fprintf(out, "\n")
+
+		io.WriteString(out, program.String())
+		io.WriteString(out, "\n")
+	}
+}
+
+func printParserErrors(out io.Writer, errors []string) {
+	for _, message := range errors {
+		io.WriteString(out, "\t"+message+"\t")
 	}
 }
