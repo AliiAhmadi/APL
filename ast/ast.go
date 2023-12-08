@@ -3,6 +3,7 @@ package ast
 import (
 	"Ahmadi/token"
 	"bytes"
+	"strings"
 )
 
 type Node interface {
@@ -211,5 +212,30 @@ func (blockStatement *BlockStatement) String() string {
 	for _, statement := range blockStatement.Statements {
 		out.WriteString(statement.String())
 	}
+	return out.String()
+}
+
+type FunctionLiteral struct {
+	Token      token.Token
+	Parameters []*Identifier
+	Body       *BlockStatement
+}
+
+func (functionLiteral *FunctionLiteral) expressionNode()      {}
+func (functionLiteral *FunctionLiteral) TokenLiteral() string { return functionLiteral.Token.Literal }
+func (functionLiteral *FunctionLiteral) String() string {
+	var out bytes.Buffer
+
+	params := []string{}
+	for _, par := range functionLiteral.Parameters {
+		params = append(params, par.String())
+	}
+
+	out.WriteString(functionLiteral.TokenLiteral())
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(") ")
+	out.WriteString(functionLiteral.Body.String())
+
 	return out.String()
 }
