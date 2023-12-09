@@ -21,7 +21,14 @@ func Eval(node ast.Node) object.Object {
 		return &object.Integer{
 			Value: node.Value,
 		}
+
+	// Boolean
+	case *ast.Boolean:
+		return &object.Boolean{
+			Value: node.Value,
+		}
 	}
+
 	return nil
 }
 
