@@ -12,6 +12,7 @@ var (
 	FALSE = &object.Boolean{
 		Value: false,
 	}
+	NULL = &object.Null{}
 )
 
 func Eval(node ast.Node) object.Object {
@@ -33,9 +34,7 @@ func Eval(node ast.Node) object.Object {
 
 	// Boolean
 	case *ast.Boolean:
-		return &object.Boolean{
-			Value: node.Value,
-		}
+		return nativeBoolToBooleanObject(node.Value)
 	}
 
 	return nil
@@ -49,4 +48,11 @@ func evalStatements(statements []ast.Statement) object.Object {
 	}
 
 	return result
+}
+
+func nativeBoolToBooleanObject(input bool) *object.Boolean {
+	if input {
+		return TRUE
+	}
+	return FALSE
 }
