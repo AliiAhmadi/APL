@@ -331,3 +331,20 @@ func TestFunctionApplication(t *testing.T) {
 		})
 	}
 }
+
+func TestClosures(t *testing.T) {
+	t.Parallel()
+
+	input := `
+	def adder = fun(x) {
+		fun(y) {
+			x + y;
+		};
+	};
+
+	def t = adder(2);
+	t(3);
+	`
+
+	testIntegerObject(t, testEval(input), 5)
+}
