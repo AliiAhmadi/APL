@@ -244,6 +244,10 @@ func TestErrorHandling(t *testing.T) {
 			`,
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
+		{
+			"foobar",
+			"identifier not found: foobar",
+		},
 	}
 
 	for _, test := range tests {
@@ -260,6 +264,25 @@ func TestErrorHandling(t *testing.T) {
 				t.Errorf("wrong error message. expected=%q, got=%q", test.expectedMessage, errObj.Message)
 				return
 			}
+		})
+	}
+}
+
+func TestDefStatements(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"def a = 5; a;", 5},
+		{"def a = 5 * 5; a;", 25},
+		{"def a = 5; def b = a; b;", 5},
+		{"def a = 5; def b = a; def c = a + b + 5; c;", 15},
+	}
+
+	for _, test := range tests {
+		t.Run(test.input, func(t *testing.T) {
+			testIntegerObject(t, testEval(test.input), test.expected)
 		})
 	}
 }
