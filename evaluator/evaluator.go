@@ -46,9 +46,46 @@ func Eval(node ast.Node) object.Object {
 		left := Eval(node.Left)
 		right := Eval(node.Right)
 		return evalInfixExpression(node.Operator, left, right)
+
+	// Block Statement
+	case *ast.BlockStatement:
+		return evalStatements(node.Statements)
+
+	// If Expression
+	case *ast.IfExpression:
+		return evalIfExpression(node)
 	}
 
 	return NULL
+}
+
+func evalIfExpression(ifExpression *ast.IfExpression) object.Object {
+	condition := Eval(ifExpression.Condition)
+
+	if isTruthy(condition) {
+		return Eval(ifExpression.Consequence)
+	} else if ifExpression.Alternative != nil {
+		return Eval(ifExpression.Alternative)
+	} else {
+		return NULL
+	}
+}
+
+func isTruthy(obj object.Object) bool {
+	switch obj {
+
+	case NULL:
+		return false
+
+	case TRUE:
+		return true
+
+	case FALSE:
+		return false
+
+	default:
+		return true
+	}
 }
 
 func evalInfixExpression(
