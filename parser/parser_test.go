@@ -796,3 +796,22 @@ func TestMultipleDefStatements(t *testing.T) {
 		}
 	}
 }
+
+func TestStringLiteralExpression(t *testing.T) {
+	input := `"Hello Ali Ahmadi!"`
+
+	lexer := lexer.New(input)
+	parser := New(lexer)
+	program := parser.ParseProgram()
+	checkParseErrors(t, parser)
+
+	statement := program.Statements[0].(*ast.ExpressionStatement)
+	literal, ok := statement.Expression.(*ast.StringLiteral)
+	if !ok {
+		t.Fatalf("exp not *ast.StringLiteral. got=%T", statement.Expression)
+	}
+
+	if literal.Value != "Hello Ali Ahmadi!" {
+		t.Errorf("literal.Value not %q. got=%q", input, literal.Value)
+	}
+}
