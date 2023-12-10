@@ -286,3 +286,27 @@ func TestDefStatements(t *testing.T) {
 		})
 	}
 }
+
+func TestFunctionObject(t *testing.T) {
+	t.Parallel()
+	input := "fun(x) {x + 2; };"
+
+	evaluated := testEval(input)
+	fun, ok := evaluated.(*object.Function)
+	if !ok {
+		t.Fatalf("object is not Function. got=%T", evaluated)
+	}
+
+	if len(fun.Parameters) != 1 {
+		t.Fatalf("function has wrong parameters. Parameters=%+v", fun.Parameters)
+	}
+
+	if fun.Parameters[0].String() != "x" {
+		t.Fatalf("parameter is not 'x'. got=%q", fun.Parameters[0])
+	}
+
+	expectedBody := "(x + 2)"
+	if fun.Body.String() != expectedBody {
+		t.Fatalf("body is not %q. got %q", expectedBody, fun.Body.String())
+	}
+}

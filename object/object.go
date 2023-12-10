@@ -79,3 +79,6 @@ func (function *Function) Inspect() string {
 
 	return out.String()
 }
+func (function *Function) Type() ObjectType {
+	return FUNCTION_OBJ
+}
