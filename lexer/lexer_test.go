@@ -49,6 +49,8 @@ func TestNextTokenWiderWithMoreDetails(t *testing.T) {
 	}
 
 	def result = adder(first_variable, second_variable);
+	"test string"
+	"foo bar"
 	`
 
 	tests := []struct {
@@ -91,6 +93,8 @@ func TestNextTokenWiderWithMoreDetails(t *testing.T) {
 		{token.ID, "second_variable"},
 		{token.RPARENTHESES, ")"},
 		{token.SEMICOLON, ";"},
+		{token.STRING, "test string"},
+		{token.STRING, "foo bar"},
 		{token.EOF, ""},
 	}
 
