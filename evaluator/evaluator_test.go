@@ -310,3 +310,24 @@ func TestFunctionObject(t *testing.T) {
 		t.Fatalf("body is not %q. got %q", expectedBody, fun.Body.String())
 	}
 }
+
+func TestFunctionApplication(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		input    string
+		expected int64
+	}{
+		{"def identity = fun(x) { x; }; identity(5);", 5},
+		{"def identity = fun(x) { return x; }; identity(5);", 5},
+		{"def double = fun(x) { x * 2; }; double(5);", 10},
+		{"def add = fun(x, y) { x + y; }; add(5, 5);", 10},
+		{"def add = fun(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+		{"fun(x) { x; }(5)", 5},
+	}
+
+	for _, test := range tests {
+		t.Run(test.input[:10]+"...", func(t *testing.T) {
+			testIntegerObject(t, testEval(test.input), test.expected)
+		})
+	}
+}
