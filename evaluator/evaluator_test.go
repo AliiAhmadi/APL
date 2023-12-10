@@ -178,6 +178,21 @@ func TestReturnStatements(t *testing.T) {
 		{"return 10; 9;", "return 10; 9;", 10},
 		{"return 2 * 5; 9;", "return 2 * 5; 9;", 10},
 		{"9; return 2 * 5; 9;", "9; return 2 * 5; 9;", 10},
+		{
+			"nested if",
+			`
+			if (10 > 1) {
+				if(10 > 2) {
+					return 10;
+				}
+
+				return 11;
+			}
+
+			return 12;
+			`,
+			10,
+		},
 	}
 
 	for _, test := range tests {

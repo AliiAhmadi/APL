@@ -20,7 +20,7 @@ func Eval(node ast.Node) object.Object {
 
 	// Statements
 	case *ast.Program:
-		return evalStatements(node.Statements)
+		return evalProgram(node)
 
 	// ExpressionStatement
 	case *ast.ExpressionStatement:
@@ -49,7 +49,7 @@ func Eval(node ast.Node) object.Object {
 
 	// Block Statement
 	case *ast.BlockStatement:
-		return evalStatements(node.Statements)
+		return evalBlockStatement(node)
 
 	// If Expression
 	case *ast.IfExpression:
@@ -63,6 +63,34 @@ func Eval(node ast.Node) object.Object {
 	}
 
 	return NULL
+}
+
+func evalBlockStatement(block *ast.BlockStatement) object.Object {
+	var result object.Object
+
+	for _, statement := range block.Statements {
+		result = Eval(statement)
+
+		if result != nil && result.Type() == object.RETURN_VALUE_OBJ {
+			return result
+		}
+	}
+
+	return result
+}
+
+func evalProgram(program *ast.Program) object.Object {
+	var result object.Object
+
+	for _, statement := range program.Statements {
+		result = Eval(statement)
+
+		if returnValue, ok := result.(*object.ReturnValue); ok {
+			return returnValue.Value
+		}
+	}
+
+	return result
 }
 
 func evalIfExpression(ifExpression *ast.IfExpression) object.Object {
