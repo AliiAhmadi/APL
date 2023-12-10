@@ -34,3 +34,10 @@ type Null struct{}
 
 func (null *Null) Inspect() string  { return "null" }
 func (null *Null) Type() ObjectType { return NULL_OBJ }
+
+type ReturnValue struct {
+	Value Object
+}
+
+func (returnValue *ReturnValue) Inspect() string  { return returnValue.Value.Inspect() }
+func (returnValue *ReturnValue) Type() ObjectType { return RETURN_VALUE_OBJ }
