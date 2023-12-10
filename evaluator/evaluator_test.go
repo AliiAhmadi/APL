@@ -348,3 +348,17 @@ func TestClosures(t *testing.T) {
 
 	testIntegerObject(t, testEval(input), 5)
 }
+
+func TestStringLiteral(t *testing.T) {
+	input := `"Ali Ahmadi!"`
+
+	evaluated := testEval(input)
+	str, ok := evaluated.(*object.String)
+	if !ok {
+		t.Fatalf("object is not String. got=%T", evaluated)
+	}
+
+	if str.Value != "Ali Ahmadi!" {
+		t.Errorf("String has wrong value. got=%q", str.Value)
+	}
+}
