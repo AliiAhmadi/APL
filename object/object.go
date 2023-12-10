@@ -1,6 +1,11 @@
 package object
 
-import "fmt"
+import (
+	"Ahmadi/ast"
+	"bytes"
+	"fmt"
+	"strings"
+)
 
 const (
 	INTEGER_OBJ      = "INTEGER"
@@ -8,6 +13,7 @@ const (
 	NULL_OBJ         = "NULL"
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
 	ERROR_OBJ        = "ERROR"
+	FUNCTION_OBJ     = "FUNCTION"
 )
 
 type ObjectType string
@@ -49,3 +55,27 @@ type Error struct {
 
 func (err *Error) Inspect() string  { return "Error: " + err.Message }
 func (err *Error) Type() ObjectType { return ERROR_OBJ }
+
+type Function struct {
+	Parameters []*ast.Identifier
+	Body       *ast.BlockStatement
+	Env        *Environment
+}
+
+func (function *Function) Inspect() string {
+	var out bytes.Buffer
+
+	params := []string{}
+	for _, param := range function.Parameters {
+		params = append(params, param.String())
+	}
+
+	out.WriteString("fun")
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(") {\n")
+	out.WriteString(function.Body.String())
+	out.WriteString("\n}")
+
+	return out.String()
+}
