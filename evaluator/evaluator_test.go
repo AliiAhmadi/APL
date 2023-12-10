@@ -8,6 +8,7 @@ import (
 )
 
 func TestEvalIntegerExpression(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input    string
 		expected int64
@@ -60,6 +61,7 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 }
 
 func TestEvalBooleanExpression(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input    string
 		expected bool
@@ -107,6 +109,7 @@ func testBoolObject(t *testing.T, obj object.Object, expected bool) bool {
 }
 
 func TestBangOperator(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input    string
 		expected bool
@@ -123,4 +126,43 @@ func TestBangOperator(t *testing.T) {
 		evaluated := testEval(test.input)
 		testBoolObject(t, evaluated, test.expected)
 	}
+}
+
+func TestIfElseExpressions(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		input    string
+		expected interface{}
+	}{
+		{"if (true) { 10 }", "if (true) { 10 }", 10},
+		{"if (false) { 10 }", "if (false) { 10 }", nil},
+		{"if (1) { 10 }", "if (1) { 10 }", 10},
+		{"if (1 < 2) { 10 }", "if (1 < 2) { 10 }", 10},
+		{"if (1 > 2) { 10 }", "if (1 > 2) { 10 }", nil},
+		{"if (1 > 2) { 10 } else { 20 }", "if (1 > 2) { 10 } else { 20 }", 20},
+		{"if (1 < 2) { 10 } else { 20 }", "if (1 < 2) { 10 } else { 20 }", 10},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			evaluated := testEval(test.input)
+			integer, ok := test.expected.(int)
+
+			if ok {
+				testIntegerObject(t, evaluated, int64(integer))
+			} else {
+				testNullObject(t, evaluated)
+			}
+		})
+	}
+}
+
+func testNullObject(t *testing.T, obj object.Object) bool {
+	if obj != NULL {
+		t.Errorf("object is not NULL. got=%T (%+v)", obj, obj)
+		return false
+	}
+
+	return true
 }
