@@ -46,6 +46,8 @@ const (
 	SHORT_PLUS          = "+="
 	SHORT_DIVISION      = "/="
 	SHORT_MINUS         = "-="
+	LBRACKET            = "["
+	RBRACKET            = "]"
 )
 
 var keywords map[string]TokenType = map[string]TokenType{
