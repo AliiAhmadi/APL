@@ -156,7 +156,25 @@ var builtins = map[string]*object.Builtin{
 
 	"merge": {
 		Fn: func(args ...object.Object) object.Object {
-			return NULL
+			if len(args) < 2 {
+				return newError("wrong number of arguments to 'merge' function. it should be at least %d. got=%d", 2, len(args))
+			}
+
+			for _, arg := range args {
+				if arg.Type() != object.ARRAY_OBJ {
+					return newError("arguments to 'merge' must be ARRAY. got %s", arg.Type())
+				}
+			}
+
+			newElements := make([]object.Object, 0)
+
+			for _, arg := range args {
+				newElements = append(newElements, arg.(*object.Array).Elements...)
+			}
+
+			return &object.Array{
+				Elements: newElements,
+			}
 		},
 	},
 }
