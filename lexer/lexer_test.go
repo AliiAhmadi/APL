@@ -52,6 +52,7 @@ func TestNextTokenWiderWithMoreDetails(t *testing.T) {
 	"test string"
 	"foo bar"
 	[1, 2, 3];
+	{ "a" : "b" }
 	`
 
 	tests := []struct {
@@ -104,6 +105,11 @@ func TestNextTokenWiderWithMoreDetails(t *testing.T) {
 		{token.INT, "3"},
 		{token.RBRACKET, "]"},
 		{token.SEMICOLON, ";"},
+		{token.LBRACE, "{"},
+		{token.STRING, "a"},
+		{token.COLON, ":"},
+		{token.STRING, "b"},
+		{token.RBRACE, "}"},
 		{token.EOF, ""},
 	}
 
