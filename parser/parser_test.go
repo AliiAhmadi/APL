@@ -851,6 +851,7 @@ func TestParsingArrayLiterals(t *testing.T) {
 }
 
 func TestParsingIndexExpressions(t *testing.T) {
+	t.Parallel()
 	input := `arr[1 + 2]`
 
 	lexer := lexer.New(input)
@@ -874,6 +875,7 @@ func TestParsingIndexExpressions(t *testing.T) {
 }
 
 func TestParsingHashLiteralsString(t *testing.T) {
+	t.Parallel()
 	input := `{"ali": 1, "hassan": 2, "reza": 3}`
 
 	lexer := lexer.New(input)
@@ -905,5 +907,75 @@ func TestParsingHashLiteralsString(t *testing.T) {
 
 		expectedValue := expected[literal.String()]
 		testIntegerLiteral(t, value, expectedValue)
+	}
+}
+
+func TestParsingEmptyHashLiteral(t *testing.T) {
+	t.Parallel()
+	input := `{}`
+
+	lexer := lexer.New(input)
+	parser := New(lexer)
+	program := parser.ParseProgram()
+	checkParseErrors(t, parser)
+
+	statement := program.Statements[0].(*ast.ExpressionStatement)
+	hash, ok := statement.Expression.(*ast.HashLiteral)
+	if !ok {
+		t.Fatalf("exp is not ast.HashLiteral. got=%T", statement.Expression)
+	}
+
+	if len(hash.Pairs) != 0 {
+		t.Errorf("hash.Pairs has wrong length. got=%d", len(hash.Pairs))
+	}
+}
+
+func TestParsingHashLiteralsWithExpressions(t *testing.T) {
+	t.Parallel()
+	input := `{"1": 1 * 1, "4": 2 * 2, "12": 15 - 3}`
+
+	lexer := lexer.New(input)
+	parser := New(lexer)
+	program := parser.ParseProgram()
+	checkParseErrors(t, parser)
+
+	statement := program.Statements[0].(*ast.ExpressionStatement)
+	hash, ok := statement.Expression.(*ast.HashLiteral)
+	if !ok {
+		t.Fatalf("exp is not ast.HashLiteral. got=%T", statement.Expression)
+	}
+
+	if len(hash.Pairs) != 3 {
+		t.Errorf("hash.Pairs has wrong length. got=%d", len(hash.Pairs))
+	}
+
+	tests := map[string]func(ast.Expression){
+		"1": func(expression ast.Expression) {
+			testInfixExpression(t, expression, 1, "*", 1)
+		},
+		"4": func(expression ast.Expression) {
+			testInfixExpression(t, expression, 2, "*", 2)
+		},
+		"12": func(expression ast.Expression) {
+			testInfixExpression(t, expression, 15, "-", 3)
+		},
+	}
+
+	for key, value := range hash.Pairs {
+		t.Run(key.String(), func(t *testing.T) {
+			literal, ok := key.(*ast.StringLiteral)
+			if !ok {
+				t.Errorf("key is not ast.StringLiteral. got=%T", key)
+				return
+			}
+
+			testFunction, ok := tests[literal.String()]
+			if !ok {
+				t.Errorf("no test function for key %s found.", literal.String())
+				return
+			}
+
+			testFunction(value)
+		})
 	}
 }
