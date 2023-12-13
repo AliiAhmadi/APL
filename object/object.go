@@ -4,6 +4,7 @@ import (
 	"Ahmadi/ast"
 	"bytes"
 	"fmt"
+	"hash/fnv"
 	"strings"
 )
 
@@ -119,3 +120,40 @@ func (array *Array) Inspect() string {
 	return out.String()
 }
 func (array *Array) Type() ObjectType { return ARRAY_OBJ }
+
+type HashKey struct {
+	Type  ObjectType
+	Value uint64
+}
+
+func (boolean *Boolean) HashKey() HashKey {
+	var value uint64
+
+	if boolean.Value {
+		value = 1
+	} else {
+		value = 0
+	}
+
+	return HashKey{
+		Type:  boolean.Type(),
+		Value: value,
+	}
+}
+
+func (integer *Integer) HashKey() HashKey {
+	return HashKey{
+		Type:  integer.Type(),
+		Value: uint64(integer.Value),
+	}
+}
+
+func (str *String) HashKey() HashKey {
+	h := fnv.New64a()
+	h.Write([]byte(str.Value))
+
+	return HashKey{
+		Type:  str.Type(),
+		Value: h.Sum64(),
+	}
+}
