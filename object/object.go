@@ -18,6 +18,7 @@ const (
 	STRING_OBJ       = "STRING"
 	BUILTIN_OBJ      = "BUILTIN"
 	ARRAY_OBJ        = "ARRAY"
+	HASH_OBJ         = "HASH"
 )
 
 type ObjectType string
@@ -126,6 +127,10 @@ type HashKey struct {
 	Value uint64
 }
 
+type Hashable interface {
+	HashKey() HashKey
+}
+
 func (boolean *Boolean) HashKey() HashKey {
 	var value uint64
 
@@ -156,4 +161,30 @@ func (str *String) HashKey() HashKey {
 		Type:  str.Type(),
 		Value: h.Sum64(),
 	}
+}
+
+type HashPair struct {
+	Key   Object
+	Value Object
+}
+
+type Hash struct {
+	Pairs map[HashKey]HashPair
+}
+
+func (hash *Hash) Type() ObjectType { return HASH_OBJ }
+func (hash *Hash) Inspect() string {
+	var out bytes.Buffer
+
+	pairs := []string{}
+	for _, pair := range hash.Pairs {
+		pairs = append(pairs,
+			fmt.Sprintf("%s: %s", pair.Key.Inspect(), pair.Value.Inspect()),
+		)
+	}
+
+	out.WriteString("{")
+	out.WriteString(strings.Join(pairs, ", "))
+	out.WriteString("}")
+	return out.String()
 }

@@ -4,13 +4,13 @@ import "testing"
 
 func TestStringHashKey(t *testing.T) {
 	hellos := []*String{
-		&String{Value: "Hello"},
-		&String{Value: "Hello"},
+		{Value: "Hello"},
+		{Value: "Hello"},
 	}
 
 	goodbyes := []*String{
-		&String{Value: "goodbye"},
-		&String{Value: "goodbye"},
+		{Value: "goodbye"},
+		{Value: "goodbye"},
 	}
 
 	if hellos[0].HashKey() != hellos[1].HashKey() {
