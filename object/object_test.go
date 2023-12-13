@@ -3,6 +3,7 @@ package object
 import "testing"
 
 func TestStringHashKey(t *testing.T) {
+	t.Parallel()
 	hellos := []*String{
 		{Value: "Hello"},
 		{Value: "Hello"},

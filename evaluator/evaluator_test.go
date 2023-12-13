@@ -252,6 +252,10 @@ func TestErrorHandling(t *testing.T) {
 			`"Hello" - "World"`,
 			"unknown operator: STRING - STRING",
 		},
+		{
+			`{"name": "ali"}[fun(x) { x }];`,
+			"unusable as hash key: FUNCTION",
+		},
 	}
 
 	for _, test := range tests {
@@ -501,6 +505,7 @@ func TestArrayIndexExpressions(t *testing.T) {
 }
 
 func TestHashLiterals(t *testing.T) {
+	t.Parallel()
 	input := `
 	def two = "two";
 	{
@@ -539,5 +544,54 @@ func TestHashLiterals(t *testing.T) {
 		}
 
 		testIntegerObject(t, pair.Value, exp_value)
+	}
+}
+
+func TestHashIndexExpressions(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			`{"foo": 5}["foo"]`,
+			5,
+		},
+		{
+			`{"foo": 5}["bar"]`,
+			nil,
+		},
+		{
+			`def key = "foo"; {"foo": 5}[key]`,
+			5,
+		},
+		{
+			`{}["foo"]`,
+			nil,
+		},
+		{
+			`{5: 5}[5]`,
+			5,
+		},
+		{
+			`{true: 5}[true]`,
+			5,
+		},
+		{
+			`{false: 5}[false]`,
+			5,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.input, func(t *testing.T) {
+			evaluated := testEval(test.input)
+			integer, ok := test.expected.(int)
+			if ok {
+				testIntegerObject(t, evaluated, int64(integer))
+			} else {
+				testNullObject(t, evaluated)
+			}
+		})
 	}
 }
