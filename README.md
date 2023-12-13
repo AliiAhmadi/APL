@@ -2,7 +2,7 @@
 
 # APL
 
-Ahmadi programming language is a language under development. This language is like high-level programming language used today and it is a interpreted language. 
+Ahmadi programming language is a language under development. This language is like high-level programming languages used today and it is a interpreted language. 
 APL is also dynamically typed language. At this point only support structured and functional paradigm.
 
 > [!WARNING]  
