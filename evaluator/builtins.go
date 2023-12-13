@@ -1,6 +1,9 @@
 package evaluator
 
-import "Ahmadi/object"
+import (
+	"Ahmadi/object"
+	"fmt"
+)
 
 var builtins = map[string]*object.Builtin{
 	"len": {
@@ -174,6 +177,18 @@ var builtins = map[string]*object.Builtin{
 
 			return &object.Array{
 				Elements: newElements,
+			}
+		},
+	},
+
+	"echo": {
+		Fn: func(args ...object.Object) object.Object {
+			for _, arg := range args {
+				fmt.Println(arg.Inspect())
+			}
+
+			return &object.Integer{
+				Value: int64(len(args)),
 			}
 		},
 	},
