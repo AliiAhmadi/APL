@@ -1,6 +1,7 @@
 package repl
 
 import (
+	"Ahmadi/color"
 	"Ahmadi/evaluator"
 	"Ahmadi/lexer"
 	"Ahmadi/object"
@@ -16,10 +17,10 @@ const PROMPT string = "APL>> "
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 	env := object.NewEnvironment()
-	fmt.Fprintf(out, "Ahmadi programming language - Copyright (c) 2023 Ali Ahmadi\n\n")
+	fmt.Fprintf(out, color.BLUE+"Ahmadi programming language - Copyright (c) 2023 Ali Ahmadi\n\n"+color.RESET)
 
 	for {
-		fmt.Fprint(out, PROMPT)
+		fmt.Fprint(out, color.YELLOW+PROMPT+color.RESET)
 		scanned := scanner.Scan()
 		if !scanned {
 			return
@@ -40,17 +41,17 @@ func Start(in io.Reader, out io.Writer) {
 
 		evaluated := evaluator.Eval(program, env)
 		if evaluated != nil {
-			io.WriteString(out, evaluated.Inspect())
+			io.WriteString(out, color.GREEN+evaluated.Inspect()+color.RESET)
 			io.WriteString(out, "\n")
 		}
 	}
 }
 
 func printParserErrors(out io.Writer, errors []string) {
-	io.WriteString(out, "Woops!\n")
-	io.WriteString(out, " parser errors:\n")
+	io.WriteString(out, color.RED+"Woops!\n"+color.RESET)
+	io.WriteString(out, color.RED+" parser errors:\n"+color.RESET)
 	for _, message := range errors {
-		io.WriteString(out, "\t"+message+"\n")
+		io.WriteString(out, color.RED+"\t"+message+"\n"+color.RESET)
 	}
 	io.WriteString(out, "\n")
 }
