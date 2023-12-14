@@ -8,7 +8,7 @@ APL is also dynamically typed language. At this point only support structured an
 > [!WARNING]  
 > Do not use this language in your projects. This language is for fun now :)
 
-### REPL
+### Setup and use REPL
 
 ```zsh
 # Clone APL source code.
