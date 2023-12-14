@@ -7,3 +7,20 @@ APL is also dynamically typed language. At this point only support structured an
 
 > [!WARNING]  
 > Do not use this language in your projects. This language is for fun now :)
+
+### Setup REPL
+
+```zsh
+# Clone APL source code.
+git clone https://github.com/AliiAhmadi/APL.git
+```
+
+Navigate to APL directory and run tests.
+```zsh
+go test ./... -v
+```
+
+Now compile source and use executable file.
+```zsh
+go build -o APL
+```
