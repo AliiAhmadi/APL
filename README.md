@@ -110,3 +110,17 @@ As you can see should use parentheses to specify precedence of expressions (by d
 | Sum             |
 | Less \| Greater |
 | Equality        |
+
+Now lets work with `map` data type in APL and also combine mutiple string(concatenating):
+
+```APL
+APL>> def mp = {"name": "Ali", "family": "Ahmadi", "age": 20, "country": "IR."};
+null
+APL>> mp["name"]
+Ali
+APL>> mp["age"]
+20
+APL>> mp["name"] + " " + mp["family"] + " from " + mp["country"]
+Ali Ahmadi from IR.
+APL>> 
+```
