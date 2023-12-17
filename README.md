@@ -29,17 +29,84 @@ go build -o APL
 
 Now is the time to use it and doing some evaluation:
 
-![Screenshot_20231214_102244](https://github.com/AliiAhmadi/APL/assets/107758775/cb3118e6-642c-4cd1-aac2-363cd1c0a2cd)
+```APL
+Ahmadi programming language - Copyright (c) 2023 Ali Ahmadi
+
+APL>> 
+```
 
 In APL we can define a new variable of any type with `def` keyword(even functions and closures - in following):
 
-![Screenshot_20231214_103121](https://github.com/AliiAhmadi/APL/assets/107758775/1519c5c5-d941-4953-b8f0-e69a7eb3c266)
+```APL
+APL>> def age = 20;
+null
+APL>> def name = "Ali";
+null
+APL>> 
+```
 
 As you know to see value of a variable just type its identifier:
 
-![Screenshot_20231214_103322](https://github.com/AliiAhmadi/APL/assets/107758775/b49d9fa9-7870-41c9-b196-add7b9b82e43)
+```APL
+APL>> age
+20
+APL>> name
+Ali
+APL>> 
+```
 
 APL also support numerical calculations and most important operations will work with values or with identifiers (- / * +):
 
-![Screenshot_20231214_103729](https://github.com/AliiAhmadi/APL/assets/107758775/cc894e2a-c7e5-48db-b382-a9813f6d5243)
+```APL
+APL>> 2 * 12
+24
+APL>> 56 / 7
+8
+APL>> def x = 100;
+null
+APL>> def y = 20;
+null
+APL>> x + y
+120
+APL>> x * y
+2000
+APL>> x - y
+80
+APL>> y - x
+-80
+APL>> 
+```
 
+You can define your `array` and `map` with `def` keyword in APL and use indexing like other programming language to access items:
+
+```APL
+APL>> def arr = [100, 300, 200, 500];
+null
+APL>> arr[0];
+100
+APL>> 
+```
+
+You can define multidimensional arrays:
+
+```APL
+APL>> def first = [[1, 2]];
+null
+APL>> def second = [[4, 16], [5, 25]];
+null
+APL>> def result = (first[0][1] * second[1][0]) + second[0][0];
+null
+APL>> result
+14
+APL>> 
+```
+As you can see should use parentheses to specify precedence of expressions (by default parser will have precedence like below):
+| operations      |
+|-----------------|
+| Index           |
+| Function call   |
+| Prefix          |
+| Product         |
+| Sum             |
+| Less \| Greater |
+| Equality        |
