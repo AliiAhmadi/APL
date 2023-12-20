@@ -124,3 +124,82 @@ APL>> mp["name"] + " " + mp["family"] + " from " + mp["country"]
 Ali Ahmadi from IR.
 APL>> 
 ```
+Now lets take a look at functions and closures in APL. Note that in APL you can write nested functions. In APL functions will define with `fun` keyword:
+
+```APL
+APL>> def adder = fun(x, y) { return x + y; };
+null
+APL>> adder(100, 23);
+123
+APL>> 
+```
+
+Also you can return a closure from a function and store it in a variable:
+
+```APL
+APL>> def outer_function = fun() { return fun() { return "this is from inner function"; }; };
+null
+APL>> def inner_function = outer_function();
+null
+APL>> inner_function();
+this is from inner function
+APL>> 
+```
+
+If you want to see structure of a object in APL can write it down simply and it will printed:
+
+```APL
+APL>> def arr = [1, 2, 3, 4, 5];
+null
+APL>> arr
+[1, 2, 3, 4, 5]
+APL>> 
+```
+
+```APL
+APL>> def mp = {"name":"APL", "version":"1.0.0"};
+null
+APL>> mp
+{name: APL, version: 1.0.0}
+APL>> 
+```
+
+```APL
+APL>> true
+true
+APL>> false
+false
+APL>> 
+```
+
+```APL
+APL>> def adder = fun(x, y, z) { return x + y + z; };
+null
+APL>> adder
+fun(x, y, z) {
+return ((x + y) + z);
+}
+APL>> 
+```
+
+```APL
+APL>> def ad_mp = {"func": fun(x, y) { return x * y; }};
+null
+APL>> ad_mp
+{func: fun(x, y) {
+return (x * y);
+}}
+APL>> ad_mp["func"](12, 13);
+156
+APL>> 
+```
+
+```APL
+APL>> def x = 18;
+null
+APL>> x == 18
+true
+APL>> x != 18
+false
+APL>> 
+```
